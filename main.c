@@ -13,6 +13,8 @@
 #include <string.h>
 #include <errno.h>
 #include <assert.h>
+#include <signal.h>
+
 #if !defined(likely) && defined(__GNUC__)
 #define likely(x)       __builtin_expect((x),1)
 #elif !defined(likely)
@@ -32,7 +34,7 @@ static monitor** monitors = NULL;
 static size_t monitors_size = 0;
 void* emalloc(size_t size) {
 	void* ret = malloc(size);
-	if (size && !ret) {
+	if (unlikely(size && !ret)) {
 		fprintf(stderr, "malloc failed to allocate %zu bytes. terminating...",
 				size);
 #if defined(__GLIBC__)
@@ -214,7 +216,6 @@ bool unmonitor_dir(char* fullpath, bool recursive) {
 			return false;
 		}
 		if (inotify_rm_watch(inotify_fd, monitors[index]->watchfd) != 0) {
-			//TODO: error handling
 			fprintf(stderr,
 					"Warning, could not remove monitor of \"%s\", this will likely result in memory leaks..",
 					monitors[index]->path);
@@ -250,6 +251,7 @@ bool unmonitor_dir(char* fullpath, bool recursive) {
 }
 
 void shutdown_cleanup(void) {
+	printf("shutting down\n");
 	for (size_t i = 0; i < monitors_size; ++i) {
 		if (inotify_rm_watch(inotify_fd, monitors[i]->watchfd) != 0) {
 			fprintf(stderr, "Warning, failed to remove watcher for \"%s\"\n",
@@ -259,10 +261,14 @@ void shutdown_cleanup(void) {
 		free(monitors[i]);
 	}
 	free(monitors);
+	close(inotify_fd);
 }
+
 int main(int argc, char* argv[]) {
 	atexit(shutdown_cleanup);
-	inotify_fd = inotify_init1(IN_NONBLOCK);
+	//signal(SIGTERM, shutdown_cleanup);
+	//signal(SIGINT,shutdown_cleanup);
+	inotify_fd = inotify_init1(0);
 	if (inotify_fd == -1) {
 		fprintf(stderr, "Error, inotify_init1 failed. exiting.. error: %s\n",
 				strerror(errno));
@@ -283,7 +289,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	while (monitors_size > 0) {
-
+		break;
 	}
 	return EXIT_SUCCESS;
 }
