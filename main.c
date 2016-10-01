@@ -16,14 +16,14 @@
 #include <signal.h>
 
 #if !defined(likely) 
-#if defined(__GNUC__) || defined(__ICL) || defined(__clang__)
+#if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__clang__)
 #define likely(x)       __builtin_expect((x),1)
 #else
 #define likely(x) (x)
 #endif
 #endif
 #if !defined(unlikely)
-#if defined(__GNUC__) || defined(__ICL) || defined(__clang__)
+#if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__clang__)
 #define unlikely(x)     __builtin_expect((x),0)
 #else
 #define unlikely(x) (x)
