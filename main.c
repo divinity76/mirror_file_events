@@ -29,7 +29,7 @@
 #define unlikely(x) (x)
 #endif
 #endif
-typ1edef struct {
+typedef struct {
 	int watchfd;
 	char* path;
 } monitor;
