@@ -42,7 +42,7 @@ void* emalloc(size_t size) {
 		fprintf(stderr, "malloc failed to allocate %zu bytes. terminating...",
 				size);
 #if defined(__GLIBC__)
-		//add glibc backtrace() and stuff here?
+		//add glibc backtrace() stuff here?
 #endif
 		exit(EXIT_FAILURE);
 	}
@@ -54,7 +54,7 @@ void* erealloc(void* ptr, size_t size) {
 		fprintf(stderr, "realloc failed to allocate %zu bytes. terminating...",
 				size);
 #if defined(__GLIBC__)
-		//add glibc backtrace() and stuff here?
+		//add glibc backtrace() stuff here?
 #endif
 		exit(EXIT_FAILURE);
 	}
@@ -67,7 +67,7 @@ void* ecalloc(size_t num, size_t size) {
 		fprintf(stderr, "calloc failed to allocate %zu bytes. terminating...",
 				num * size);
 #if defined(__GLIBC__)
-		//add glibc backtrace() and stuff here?
+		//add glibc backtrace() stuff here?
 #endif
 		exit(EXIT_FAILURE);
 
