@@ -15,20 +15,18 @@
 #include <assert.h>
 #include <signal.h>
 
-#if !defined(likely) 
+
+
+#if !defined(likely)
 #if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__clang__)
-#define likely(x)       __builtin_expect((x),1)
+#define likely(x)       __builtin_expect(!!(x),1)
+#define unlikely(x)     __builtin_expect(!!(x),0)
 #else
 #define likely(x) (x)
-#endif
-#endif
-#if !defined(unlikely)
-#if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__clang__)
-#define unlikely(x)     __builtin_expect((x),0)
-#else
 #define unlikely(x) (x)
 #endif
 #endif
+
 typedef struct {
 	int watchfd;
 	char* path;
